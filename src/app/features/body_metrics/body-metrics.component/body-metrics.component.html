@@ -1,0 +1,56 @@
+<h2>Body Metrics</h2>
+<form [formGroup]="form">
+  <label>Gender</label>
+  <select formControlName="gender">
+    <option value="">Select</option>
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+  </select>
+
+  <label>Height (cm)</label>
+  <input type="number" formControlName="height_cm" />
+
+  <label>Weight (kg)</label>
+  <input type="number" formControlName="weight_kg" />
+
+  <h3>Optional Measurements</h3>
+  <label>Waist</label>
+  <input type="number" formControlName="waist" />
+
+  <label>Neck</label>
+  <input type="number" formControlName="neck" />
+
+  <label>Hip</label>
+  <input type="number" formControlName="hip" />
+
+  <label>Systolic</label>
+  <input type="number" formControlName="systolic" />
+
+  <label>Diastolic</label>
+  <input type="number" formControlName="diastolic" />
+
+  <label>Pulse Rate</label>
+  <input type="number" formControlName="pulse_rate" />
+
+  <div *ngIf="form.errors?.['bloodPressureHuman']" class="error">
+    Blood pressure values are not realistic
+  </div>
+
+  <div *ngIf="form.errors?.['pulseRateHuman']" class="error">
+    Pulse rate is not realistic
+  </div>
+</form>
+
+<section *ngIf="bmi() || bodyFat() || bloodPressureAssessment()">
+  <h3>Results</h3>
+
+  <p *ngIf="bmi()">BMI: {{ bmi() }} ({{ bmiStatus() }})</p>
+  <p *ngIf="bmiAdvice()">{{ bmiAdvice() }}</p>
+
+  <p *ngIf="bodyFat()">Body Fat: {{ bodyFat() }}%</p>
+  <p *ngIf="bodyFatAdvice()">{{ bodyFatAdvice() }}</p>
+
+  <p *ngIf="bloodPressureAssessment()">{{ bloodPressureAssessment() }}</p>
+  <button type="button" (click)="saveMetrics()">Save Metrics</button>
+  <p *ngIf="saveMessage()" style="color: green; margin-top: 10px;">{{ saveMessage() }}</p>
+</section>
