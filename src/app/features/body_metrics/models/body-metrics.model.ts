@@ -1,4 +1,3 @@
-// body-metrics.model.ts
 export interface BodyMetrics {
   gender?: 'male' | 'female';
   height_cm?: number;
