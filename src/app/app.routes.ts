@@ -5,5 +5,5 @@ import { ProgressComponent } from './features/body_metrics/components/progress.c
 
 export const routes: Routes = [
     { path: 'metrics', component: BodyMetricsComponent },
-      { path: 'progress', component: ProgressComponent },
+    { path: 'progress', component: ProgressComponent },
 ];

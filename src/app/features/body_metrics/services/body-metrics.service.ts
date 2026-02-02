@@ -1,8 +1,48 @@
 import { Injectable } from '@angular/core';
 import { BodyMetrics } from '../models/body-metrics.model';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+export interface BodyMetricsDto {
+  heightCm: number;
+  weightKg: number;
+  bmi: number;
+  bodyFat?: number;
+  waistCm?: number;
+  neckCm?: number;
+  hipCm?: number;
+  systolic?: number;
+  diastolic?: number;
+  pulseRate?: number;
+  recordedAt: Date;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  gender: 'male' | 'female';
+}
 
 @Injectable({ providedIn: 'root' })
 export class BodyMetricsService {
+  private apiUrl = 'http://localhost:3001';
+
+  constructor(private http: HttpClient) {}
+
+  // -------------------- User APIs --------------------
+  getUserById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/me`);
+  }
+
+  // -------------------- Metrics APIs --------------------
+  saveMetrics(userId: number, metrics: BodyMetricsDto): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/${userId}/metrics`, metrics);
+  }
 
   calculateBMI(heightCm: number, weightKg: number): number {
     const h = heightCm / 100;
@@ -16,7 +56,7 @@ export class BodyMetricsService {
     return 'Obese';
   }
 
-  calculateBodyFat(data: BodyMetrics): number | null {
+  calculateBodyFat(data: BodyMetrics & { gender?: 'male' | 'female' }): number | null {
     const { gender, waist, neck, hip, height_cm } = data;
     if (!gender || !waist || !neck || !height_cm) return null;
 
@@ -49,7 +89,8 @@ export class BodyMetricsService {
     if (systolic < 140 || diastolic < 90) return 'High blood pressure (Hypertension Stage 1). Consult a doctor.';
     return 'High blood pressure (Hypertension Stage 2). Seek medical advice immediately.';
   }
-    adviceBodyFat(bodyFat: number, gender: 'male' | 'female'): string {
+
+  adviceBodyFat(bodyFat: number, gender: 'male' | 'female'): string {
     if (gender === 'male') {
       if (bodyFat < 6) return 'Body fat too low, consider increasing nutrition.';
       if (bodyFat < 25) return 'Healthy body fat range.';

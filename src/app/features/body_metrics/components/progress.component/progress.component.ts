@@ -1,11 +1,9 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Chart from 'chart.js/auto';
-import 'chartjs-adapter-luxon'; //important for time scales
-import { BodyMetricsHistoryService } from '../../services/body-metrics-history.service';
-import { MOCK_USER } from '../../models/mock-user.model'; // mock user
+import 'chartjs-adapter-luxon';
+import { BodyMetricsHistoryService, BodyMetricsHistoryItem } from '../../services/body-metrics-history.service';
 import { DateTime } from 'luxon';
-
 
 @Component({
   standalone: true,
@@ -15,35 +13,40 @@ import { DateTime } from 'luxon';
   styleUrls: ['./progress.component.css']
 })
 export class ProgressComponent implements AfterViewInit {
-  metricsHistory: any[] = [];
+  metricsHistory: BodyMetricsHistoryItem[] = [];
 
   constructor(private historyService: BodyMetricsHistoryService) {}
 
   ngAfterViewInit() {
-    // Initialize history after service is ready
-    this.metricsHistory = this.historyService.getUserHistory(MOCK_USER.id);
-
-    this.createBmiChart();
-    this.createBodyFatChart();
-    this.createBloodPressureChart();
-    this.createPulseChart();
+    this.loadHistory();
   }
 
-  // -----------------------------
-  // Helper: convert metrics to {x: DateTime, y: number} skipping nulls
-  // -----------------------------
-  private extractSeries(selector: (m: any) => number | null) {
+  private loadHistory() {
+    const userId = 2; // replace with dynamic user ID if needed
+
+    this.historyService.getUserHistory(userId).subscribe({
+      next: history => {
+        this.metricsHistory = history.map(h => ({
+          ...h,
+        }));
+          console.log('Loaded metricsHistory:', this.metricsHistory);
+        this.createBmiChart();
+        this.createBodyFatChart();
+        this.createBloodPressureChart();
+        this.createPulseChart();
+      }
+    });
+  }
+
+  private extractSeries(selector: (m: BodyMetricsHistoryItem) => number | null) {
     return this.metricsHistory
       .filter(m => selector(m) !== null)
       .map(m => ({
-        x: DateTime.fromJSDate(m.recorded_at), // Luxon DateTime
+        x: m.recordedAt,
         y: selector(m) as number
       }));
   }
 
-  // -----------------------------
-  // Generic chart creator
-  // -----------------------------
   private createLineChart(canvasId: string, label: string, data: any[], color: string) {
     if (!data.length) return;
     new Chart(canvasId, {
@@ -60,25 +63,16 @@ export class ProgressComponent implements AfterViewInit {
     });
   }
 
-  // -----------------------------
-  // BMI
-  // -----------------------------
   private createBmiChart() {
     const data = this.extractSeries(m => m.bmi);
     this.createLineChart('bmiChart', 'BMI', data, '#ff7fa3');
   }
 
-  // -----------------------------
-  // Body Fat
-  // -----------------------------
   private createBodyFatChart() {
-    const data = this.extractSeries(m => m.body_fat);
+    const data = this.extractSeries(m => m.bodyFat);
     this.createLineChart('fatChart', 'Body Fat %', data, '#a3d0ff');
   }
 
-  // -----------------------------
-  // Blood Pressure (dual line)
-  // -----------------------------
   private createBloodPressureChart() {
     const systolic = this.extractSeries(m => m.systolic);
     const diastolic = this.extractSeries(m => m.diastolic);
@@ -104,11 +98,8 @@ export class ProgressComponent implements AfterViewInit {
     });
   }
 
-  // -----------------------------
-  // Pulse Rate
-  // -----------------------------
   private createPulseChart() {
-    const data = this.extractSeries(m => m.pulse_rate);
+    const data = this.extractSeries(m => m.pulseRate);
     this.createLineChart('pulseChart', 'Pulse Rate (bpm)', data, '#d780ff');
   }
 }

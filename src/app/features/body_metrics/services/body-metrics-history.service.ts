@@ -1,67 +1,35 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { DateTime } from 'luxon';
+
+// Export this interface so other files can use it
+export interface BodyMetricsHistoryItem {
+  user_id: number;
+  recordedAt: DateTime;
+  bmi: number;
+  bodyFat: number | null;
+  systolic: number | null;
+  diastolic: number | null;
+  pulseRate: number | null;
+}
 
 @Injectable({ providedIn: 'root' })
 export class BodyMetricsHistoryService {
+  private baseUrl = 'http://localhost:3001'; // backend URL
 
-  // Mock DB rows (same user_id)
-  private history = [
-    {
-      user_id: '11111111-1111-1111-1111-111111111111',
-      recorded_at: new Date('2024-12-01'),
-      bmi: 27.4,
-      body_fat: 32,
-      systolic: 135,
-      diastolic: 88,
-      pulse_rate: 78
-    },
-    {
-      user_id: '11111111-1111-1111-1111-111111111111',
-      recorded_at: new Date('2025-01-01'),
-      bmi: 26.8,
-      body_fat: 30,
-      systolic: 130,
-      diastolic: 85,
-      pulse_rate: 75
-    },
-    {
-      user_id: '11111111-1111-1111-1111-111111111111',
-      recorded_at: new Date('2025-02-01'),
-      bmi: 25.9,
-      body_fat: 28,
-      systolic: 125,
-      diastolic: 82,
-      pulse_rate: 72
-    },
-      {
-    user_id: '11111111-1111-1111-1111-111111111111',
-    recorded_at: new Date('2025-02-15'),
-    bmi: 25.9,
-    body_fat: null,
-    systolic: 125,
-    diastolic: 82,
-    pulse_rate: null
-  },
-  {
-    user_id: '11111111-1111-1111-1111-111111111111',
-    recorded_at: new Date('2025-03-01'),
-    bmi: 24.8,
-    body_fat: 22.4,
-    systolic: null,
-    diastolic: null,
-    pulse_rate: 72
-  }
-  ];
+  constructor(private http: HttpClient) {}
 
-  getUserHistory(userId: string) {
-    return this.history.filter(h => h.user_id === userId);
+  // Return Observable from backend
+  getUserHistory(userId: number): Observable<BodyMetricsHistoryItem[]> {
+    return this.http.get<BodyMetricsHistoryItem[]>(`${this.baseUrl}/users/${userId}/metrics`);
   }
-extractSeries<T extends number | null>(
-    selector: (m: any) => T
-  ) {
-    return this.history
+
+  extractSeries(items: BodyMetricsHistoryItem[], selector: (m: BodyMetricsHistoryItem) => number | null) {
+    return items
       .filter(m => selector(m) !== null)
       .map(m => ({
-        x: m.recorded_at,
+        x: m.recordedAt,
         y: selector(m) as number
       }));
   }

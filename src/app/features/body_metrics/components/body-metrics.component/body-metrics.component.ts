@@ -1,11 +1,8 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, signal, computed, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { BodyMetricsService } from '../../services/body-metrics.service';
+import { BodyMetricsService, User, BodyMetricsDto } from '../../services/body-metrics.service';
 import { humanHeight, humanWeight, humanCircumference, humanBloodPressure } from '../../validators/body-metrics.validators';
-import { BodyMetrics } from '../../models/body-metrics.model';
-import { debounceTime } from 'rxjs';
-import { MOCK_USER } from '../../models/mock-user.model'; // mock user
 
 @Component({
   selector: 'app-body-metrics',
@@ -14,20 +11,66 @@ import { MOCK_USER } from '../../models/mock-user.model'; // mock user
   templateUrl: './body-metrics.component.html',
   styleUrls: ['./body-metrics.component.css']
 })
-export class BodyMetricsComponent {
+export class BodyMetricsComponent implements OnInit {
   form: FormGroup;
 
-    // Simulated logged-in user
-  currentUser = MOCK_USER;
+  // --- signals ---
+  currentUser = signal<User | null>(null);
 
-  // Live result signals
-  bmi = signal<number | null>(null);
-  bmiStatus = signal('');
-  bmiAdvice = signal('');
-  bodyFat = signal<number | null>(null);
-  bodyFatAdvice = signal('');
-  bloodPressureAssessment = signal('');
+  // raw form signals
+  heightCm = signal<number | null>(null);
+  weightKg = signal<number | null>(null);
+  waistCm = signal<number | null>(null);
+  neckCm = signal<number | null>(null);
+  hipCm = signal<number | null>(null);
+  systolic = signal<number | null>(null);
+  diastolic = signal<number | null>(null);
+  pulseRate = signal<number | null>(null);
+
   saveMessage = signal('');
+
+  // --- computed metrics ---
+  bmi = computed(() => {
+    const h = this.heightCm();
+    const w = this.weightKg();
+    return h && w ? this.metrics.calculateBMI(h, w) : null;
+  });
+
+  bmiStatus = computed(() => {
+    const val = this.bmi();
+    return val ? this.metrics.bmiStatus(val) : '';
+  });
+
+  bmiAdvice = computed(() => {
+    const val = this.bmi();
+    return val ? this.metrics.adviceBMI(val) : '';
+  });
+
+  bodyFat = computed(() => {
+    const user = this.currentUser();
+    if (!user) return null;
+
+    return this.metrics.calculateBodyFat({
+      gender: user.gender,
+      height_cm: this.heightCm() ?? undefined,
+      weight_kg: this.weightKg() ?? undefined,
+      waist: this.waistCm() ?? undefined,
+      neck: this.neckCm() ?? undefined,
+      hip: this.hipCm() ?? undefined,
+    });
+  });
+
+  bodyFatAdvice = computed(() => {
+    const bf = this.bodyFat();
+    const user = this.currentUser();
+    return bf && user ? this.metrics.adviceBodyFat(bf, user.gender) : '';
+  });
+
+  bloodPressureAssessment = computed(() => {
+    const s = this.systolic();
+    const d = this.diastolic();
+    return s && d ? this.metrics.bloodPressureAssessment(s, d) : '';
+  });
 
   constructor(private fb: FormBuilder, private metrics: BodyMetricsService) {
     this.form = this.fb.group({
@@ -40,78 +83,57 @@ export class BodyMetricsComponent {
       diastolic: [null],
       pulse_rate: [null]
     }, { validators: humanBloodPressure });
-
-    this.form.valueChanges
-      .pipe(debounceTime(200))
-      .subscribe(() => this.updateResults());
   }
 
-  private toBodyMetrics(): BodyMetrics {
-    const v = this.form.value;
-    return {
-      height_cm: v.height_cm ?? undefined,
-      weight_kg: v.weight_kg ?? undefined,
-      waist: v.waist ?? undefined,
-      neck: v.neck ?? undefined,
-      hip: v.hip ?? undefined,
-      systolic: v.systolic ?? undefined,
-      diastolic: v.diastolic ?? undefined,
-      pulse_rate: v.pulse_rate ?? undefined
-    };
-  }
-
-  private updateResults() {
-    const data = this.toBodyMetrics();
-
-    // BMI
-    if (data.height_cm && data.weight_kg) {
-      const bmiVal = this.metrics.calculateBMI(data.height_cm, data.weight_kg);
-      this.bmi.set(bmiVal);
-      this.bmiStatus.set(this.metrics.bmiStatus(bmiVal));
-      this.bmiAdvice.set(this.metrics.adviceBMI(bmiVal));
-    } else {
-      this.bmi.set(null);
-      this.bmiStatus.set('');
-      this.bmiAdvice.set('');
-    }
-
-    // Body fat — gender comes from USER
-    const bf = this.metrics.calculateBodyFat({
-      ...data,
-      gender: this.currentUser.gender
+  ngOnInit() {
+    // Load user from backend
+    this.metrics.getUserById(2).subscribe(user => {
+      this.currentUser.set(user);
     });
 
-    this.bodyFat.set(bf);
-    this.bodyFatAdvice.set(
-      bf && this.currentUser.gender
-        ? this.metrics.adviceBodyFat(bf, this.currentUser.gender)
-        : ''
-    );
-
-    // Blood pressure
-    if (data.systolic && data.diastolic) {
-      this.bloodPressureAssessment.set(
-        this.metrics.bloodPressureAssessment(data.systolic, data.diastolic)
-      );
-    } else {
-      this.bloodPressureAssessment.set('');
-    }
+    // Bind form values to signals
+    this.form.valueChanges
+      .pipe()
+      .subscribe(v => {
+        this.heightCm.set(v.height_cm);
+        this.weightKg.set(v.weight_kg);
+        this.waistCm.set(v.waist);
+        this.neckCm.set(v.neck);
+        this.hipCm.set(v.hip);
+        this.systolic.set(v.systolic);
+        this.diastolic.set(v.diastolic);
+        this.pulseRate.set(v.pulse_rate);
+      });
   }
 
   saveMetrics() {
-    const payload = {
-      user_id: this.currentUser.id,
-      ...this.toBodyMetrics(),
-      bmi: this.bmi(),
-      body_fat: this.bodyFat(),
-      recorded_at: new Date()
-    };
+    const user = this.currentUser();
+    if (!user) return;
 
-    console.log('MOCK SAVE → backend', payload);
+    const payload: BodyMetricsDto = {
+  heightCm: this.heightCm()!,
+  weightKg: this.weightKg()!,
+  bmi: this.bmi()!,
+  bodyFat: this.bodyFat() ?? undefined,
+  recordedAt: new Date(),
+  ...(this.waistCm() != null && { waistCm: this.waistCm()! }),
+  ...(this.neckCm() != null && { neckCm: this.neckCm()! }),
+  ...(this.hipCm() != null && { hipCm: this.hipCm()! }),
+  ...(this.systolic() != null && { systolic: this.systolic()! }),
+  ...(this.diastolic() != null && { diastolic: this.diastolic()! }),
+  ...(this.pulseRate() != null && { pulseRate: this.pulseRate()! }),
+};
 
-    setTimeout(() => {
-      this.saveMessage.set('Metrics saved successfully!');
-      setTimeout(() => this.saveMessage.set(''), 3000);
-    }, 500);
+    this.metrics.saveMetrics(user.id, payload).subscribe({
+      next: () => {
+        this.saveMessage.set('Metrics saved successfully!');
+        setTimeout(() => this.saveMessage.set(''), 3000);
+      },
+      error: (err) => {
+        console.error('Failed to save metrics', err);
+        this.saveMessage.set('Failed to save metrics.');
+        setTimeout(() => this.saveMessage.set(''), 3000);
+      }
+    });
   }
 }
