@@ -1,0 +1,68 @@
+.daily-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+    height: 180px; /* 👈 fixed height */
+
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.value {
+  font-size: 0.85rem;
+  color: var(--gray-dark);
+}
+
+.desc {
+  font-size: 0.85rem;
+  color: var(--gray-medium);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actions button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gradient-primary);
+  color: white;
+  font-size: 1.2rem;
+}
+
+.daily-card.completed {
+  border-left: 4px solid var(--success);
+}
+
+.check {
+  color: var(--success);
+  font-size: 1.2rem;
+}
+
+.binary-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: var(--gradient-primary);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.binary-btn.done {
+  background: var(--primary);
+}
+

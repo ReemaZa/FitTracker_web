@@ -1,0 +1,12 @@
+<h1>Today</h1>
+
+<div class="tracker-grid">
+  <app-daily-goal-card
+    *ngFor="let goal of dailyGoals()"
+    [goal]="goal"
+    (increment)="increment($event)"
+    (decrement)="decrement($event)"
+      (toggle)="toggleBinary($event)"
+
+  />
+</div>

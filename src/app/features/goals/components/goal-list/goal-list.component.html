@@ -1,0 +1,8 @@
+<div class="goal-grid">
+  <app-goal-card
+    *ngFor="let goal of goals"
+    [goal]="goal"
+  (toggle)="onToggle($event)"
+    (delete)="delete.emit($event)"
+  />
+</div>
