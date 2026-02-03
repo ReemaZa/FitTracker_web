@@ -1,0 +1,210 @@
+<div class="modal-overlay" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2 class="modal-title">Start a New Discussion</h2>
+      <p class="modal-subtitle">Share your fitness journey, ask questions, or help others</p>
+      <button class="close-btn" (click)="onCancel()">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <form (ngSubmit)="onSubmit()" #postForm="ngForm">
+        <!-- Title Input -->
+        <div class="form-group">
+          <label for="postTitle" class="form-label">
+            <span class="label-text">Discussion Title</span>
+            <span class="label-hint">Be specific and descriptive</span>
+          </label>
+          <input
+            type="text"
+            id="postTitle"
+            [ngModel]="title()"
+            (ngModelChange)="updateTitle($event)"
+            name="title"
+            required
+            maxlength="120"
+            placeholder="e.g., Best leg day routine for beginners?"
+            class="form-input"
+            #titleInput="ngModel"
+          >
+          <div class="input-footer">
+            <span 
+              class="char-count" 
+              [class.char-count-warning]="characterCount().exceeded"
+            >
+              {{ characterCount().current }}/120
+            </span>
+            @if (titleInput.invalid && titleInput.touched) {
+              <span class="error-message">Title is required</span>
+            }
+          </div>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <div class="category-grid">
+            @for (category of CATEGORIES; track trackByCategory($index, category)) {
+              <div class="category-card"
+                   [class.selected]="selectedCategory() === category.value"
+                   (click)="selectCategory(category.value)">
+                <div class="category-icon">{{ category.icon }}</div>
+                <div class="category-info">
+                  <h4 class="category-name">{{ category.label }}</h4>
+                  <p class="category-desc">{{ category.description }}</p>
+                </div>
+                @if (selectedCategory() === category.value) {
+                  <span class="checkmark">✓</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Content Textarea -->
+        <div class="form-group">
+          <label for="postContent" class="form-label">
+            <span class="label-text">Your Question or Discussion</span>
+            <span class="label-hint">Provide details, be clear and helpful</span>
+          </label>
+          <textarea
+            id="postContent"
+            [ngModel]="content()"
+            (ngModelChange)="updateContent($event)"
+            name="content"
+            required
+            rows="8"
+            placeholder="Share your experience, ask specific questions, or provide helpful information..."
+            class="form-textarea"
+            #contentInput="ngModel"
+          ></textarea>
+          <div class="textarea-footer">
+            <div class="formatting-tips">
+              <span class="material-icons-outlined icon-sm">info</span>
+              <span>You can use **bold**, *italic*, and `code` formatting</span>
+            </div>
+            @if (contentInput.invalid && contentInput.touched) {
+              <span class="error-message">Content is required</span>
+            }
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label class="form-label">
+            <span class="label-text">Tags</span>
+            <span class="label-hint">Add up to 5 tags to help others find your post</span>
+          </label>
+          
+          <!-- Selected Tags -->
+          <div class="selected-tags">
+            @for (tag of tags(); track trackByTag($index, tag)) {
+              <div class="tag-item">
+                #{{ tag }}
+                <button 
+                  type="button" 
+                  class="remove-tag" 
+                  (click)="removeTag(tag)"
+                  [disabled]="isSubmitting()"
+                >
+                  <span class="material-icons-outlined icon-sm">close</span>
+                </button>
+              </div>
+            }
+            @if (tags().length === 0) {
+              <span class="no-tags">No tags added yet</span>
+            }
+            @if (hasReachedTagLimit()) {
+              <span class="tag-limit-warning">Maximum 5 tags reached</span>
+            }
+          </div>
+
+          <!-- Add Tag Input -->
+          <div class="tag-input-group">
+            <input
+              type="text"
+              [ngModel]="newTagInput()"
+              (ngModelChange)="updateNewTagInput($event)"
+              name="newTag"
+              maxlength="20"
+              placeholder="Add a tag (e.g., beginner, cardio, home-workout)"
+              class="tag-input"
+              (keyup.enter)="addTag()"
+              [disabled]="hasReachedTagLimit() || isSubmitting()"
+            >
+            <button 
+              type="button" 
+              class="add-tag-btn" 
+              (click)="addTag()"
+              [disabled]="hasReachedTagLimit() || isSubmitting()"
+            >
+              <span class="material-icons-outlined">add</span>
+            </button>
+          </div>
+
+          <!-- Suggested Tags -->
+          <div class="suggested-tags">
+            <label class="suggested-label">Suggested Tags:</label>
+            <div class="tag-suggestions">
+              @for (tag of SUGGESTED_TAGS; track trackBySuggestedTag($index, tag)) {
+                <button
+                  type="button"
+                  class="tag-suggestion"
+                  [class.selected]="tags().includes(tag)"
+                  (click)="addSuggestedTag(tag)"
+                  [disabled]="hasReachedTagLimit() || isSubmitting()"
+                >
+                  #{{ tag }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-secondary" 
+            (click)="onCancel()"
+            [disabled]="isSubmitting()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="!canSubmit()"
+          >
+            @if (isSubmitting()) {
+              <span class="spinner-small"></span>
+              Posting...
+            } @else {
+              <span class="material-icons-outlined icon-sm">publish</span>
+              Publish Discussion
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Footer Tips -->
+    <div class="modal-footer">
+      <div class="tips">
+        <h4 class="tips-title">
+          <span class="material-icons-outlined">lightbulb</span>
+          Tips for a great post
+        </h4>
+        <ul class="tips-list">
+          <li>Be specific about your goals or challenges</li>
+          <li>Include relevant details (age, fitness level, equipment available)</li>
+          <li>Ask clear, answerable questions</li>
+          <li>Be respectful and supportive to others</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

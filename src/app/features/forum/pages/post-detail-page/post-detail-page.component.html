@@ -1,0 +1,236 @@
+<div class="post-detail-container">
+  <!-- Back Navigation -->
+  <nav class="detail-nav">
+    <a routerLink="/forum" class="back-link">
+      <span class="material-icons-outlined icon-sm">arrow_back</span>
+      Back to Forum
+    </a>
+    
+
+
+  </nav>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading discussion...</p>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading() && post()) {
+    <div class="post-detail-content">
+      <!-- Post Header -->
+      <header class="detail-header">
+        <div class="post-meta">
+          <div class="category-badge" [class]="'category-' + post()!.category">
+            {{ post()!.category | formatCategory }}
+          </div>
+          <div class="meta-info">
+            <span class="post-time">{{ post()!.createdAt | timeAgo }}</span>
+           
+          </div>
+        </div>
+
+        <h1 class="post-title">{{ post()!.title }}</h1>
+
+        <div class="author-info">
+          <img 
+            [src]="post()!.author.avatarUrl" 
+            [alt]="post()!.author.name" 
+            class="author-avatar"
+            loading="lazy">
+          <div class="author-details">
+            <h3 class="author-name">{{ post()!.author.name }}</h3>
+            <div class="author-badges">
+            
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Post Content -->
+      <article class="post-body">
+        <div class="content">{{ post()!.content }}</div>
+        
+        <div class="post-tags">
+          @for (tag of post()!.tags; track tag) {
+            <span class="tag">#{{ tag }}</span>
+          }
+        </div>
+           <!-- Post Actions -->
+<div class="post-actions">
+  <div class="action-buttons">
+ <!-- Like -->
+<button class="action-btn" (click)="onLikePost()" [class.liked]="post()!.isLiked">
+  <span class="material-icons icon-md">
+    {{ post()!.isLiked ? 'favorite' : 'favorite_border' }}
+  </span>
+  {{ post()!.likes }}
+</button>
+
+<!-- Pin -->
+<button class="action-btn" (click)="onTogglePin()" [class.pinned]="post()!.isPinned">
+  <span class="material-icons icon-md">
+    {{ post()!.isPinned ? 'push_pin' : 'push_pin_outlined' }}
+  </span>
+  {{ post()!.isPinned ? 'Pinned' : 'Pin' }}
+</button>
+
+<!-- Share -->
+<button class="action-btn" (click)="onSharePost()" [class.shared]="post()!.isShared">
+  <span class="material-icons icon-md">share</span>
+  Share
+</button>
+
+  </div>
+</div>
+      </article>
+
+     
+      <!-- Comments Section -->
+      <section class="comments-section">
+        <h2 class="comments-title">Comments ({{ commentCount() }})</h2>
+
+        <!-- Add Comment Form -->
+        <div class="comment-form">
+          <div class="form-header">
+            <h3>Add your comment</h3>
+            @if (replyToComment()) {
+              <div class="reply-notice">
+                Replying to <strong>{{ replyToComment()!.author.name }}</strong>
+                <button class="cancel-reply" (click)="onCancelReply()">×</button>
+              </div>
+            }
+          </div>
+          
+          <textarea
+            [ngModel]="newComment()"
+            (ngModelChange)="newComment.set($event)"
+            placeholder="Share your thoughts, ask questions, or provide helpful advice..."
+            class="comment-input"
+            id="comment-input"
+            rows="4"
+          ></textarea>
+          
+          <div class="form-footer">
+            <div class="formatting-hint">
+              <span class="material-icons-outlined icon-sm">info</span>
+              Supports markdown formatting
+            </div>
+            <button 
+              class="submit-btn" 
+              (click)="onSubmitComment()"
+              [disabled]="!canSubmitComment()"
+            >
+              @if (isSubmitting()) {
+                <span class="spinner-small"></span>
+              }
+              {{ isSubmitting() ? 'Posting...' : 'Post Comment' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Comments List -->
+        <div class="comments-list">
+          @if (commentCount() === 0) {
+            <div class="no-comments">
+              <div class="no-comments-icon">
+                <span class="material-icons-outlined">forum</span>
+              </div>
+              <h3>No comments yet</h3>
+              <p>Be the first to share your thoughts!</p>
+            </div>
+          }
+
+          <!-- Afficher les commentaires organisés hiérarchiquement -->
+         @for (comment of comments(); track comment.id) {
+      <app-comment-thread
+        [comment]="comment"
+        [isPostAuthor]="isCurrentUserPostAuthor()"
+        [showReplyFormFor]="showReplyFormFor()"
+        (likeComment)="onLikeComment($event)"
+        (replyToComment)="toggleReplyForm($event.id)"
+        (markAsSolution)="onMarkAsSolution($event)"
+        (replySubmitted)="onReplySubmitted($event)"
+        (cancelReply)="onCancelReply()"
+      />
+    }
+
+        </div>
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="detail-sidebar">
+        <!-- Author Card -->
+        <div class="sidebar-card author-card">
+          <h3 class="card-title">About the Author</h3>
+          <div class="author-summary">
+            <img 
+              [src]="post()!.author.avatarUrl" 
+              [alt]="post()!.author.name" 
+              class="sidebar-avatar"
+              loading="lazy">
+            <div class="author-sidebar-info">
+              <h4>{{ post()!.author.name }}</h4>
+              <p class="author-bio">Fitness enthusiast sharing knowledge and motivation</p>
+              <div class="author-stats">
+                <div class="stat">
+                  <span class="stat-value">42</span>
+                  <span class="stat-label">Posts</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">128</span>
+                  <span class="stat-label">Solutions</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">3</span>
+                  <span class="stat-label">Years</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Related Posts -->
+        <div class="sidebar-card related-posts">
+          <h3 class="card-title">Related Discussions</h3>
+          <div class="related-post" role="button" tabindex="0">
+            <h4>Best pre-workout meals</h4>
+            <div class="post-meta-small">
+              <span>12 comments</span> • <span>2d ago</span>
+            </div>
+          </div>
+          <div class="related-post" role="button" tabindex="0">
+            <h4>Dealing with workout plateaus</h4>
+            <div class="post-meta-small">
+              <span>8 comments</span> • <span>1w ago</span>
+            </div>
+          </div>
+          <div class="related-post" role="button" tabindex="0">
+            <h4>Home workout equipment recommendations</h4>
+            <div class="post-meta-small">
+              <span>21 comments</span> • <span>3d ago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community Guidelines -->
+        <div class="sidebar-card guidelines">
+          <h3 class="card-title">
+            <span class="material-icons-outlined icon-sm">gavel</span>
+            Community Guidelines
+          </h3>
+          <ul class="guidelines-list">
+            <li>Be respectful and supportive</li>
+            <li>Share evidence-based advice</li>
+            <li>Keep discussions on-topic</li>
+            <li>Mark helpful answers as solutions</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  }
+</div>

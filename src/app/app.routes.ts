@@ -11,5 +11,11 @@ export const routes: Routes = [
     path: 'tracker',
     loadChildren: () => import('./features/tracker/tracker.routes')
       .then(m => m.trackerRoutes)
+  },
+   {
+    path: 'forum',
+    loadChildren: () => import('./features/forum/forum.routes')
+      .then(m => m.forumRoutes)
   }
+
 ];
