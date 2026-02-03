@@ -1,0 +1,129 @@
+<div class="forum-page">
+  <!-- Header -->
+  <header class="forum-header">
+    <div class="header-content">
+      <h1 class="forum-title">💬 Community Forum</h1>
+      <p class="forum-subtitle">Connect, share, and grow with fitness enthusiasts</p>
+      
+    <button 
+  class="create-post-btn" 
+  (click)="openCreateModal()"
+
+>
+  <span class="plus-icon">+</span> 
+  New Post
+</button>
+    </div>
+  </header>
+
+  <!-- Category Navigation -->
+  <nav class="category-tabs">
+    <div class="category-list">
+      @for (category of categories; track category.id) {
+        <button 
+          class="category-btn" 
+          [class.active]="selectedCategory() === category.id"
+          (click)="onCategorySelect(category.id)">
+          <span class="category-icon">{{ category.icon }}</span>
+          {{ category.name }}
+        </button>
+      }
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="forum-main">
+    <div class="content-wrapper">
+      <!-- Posts Section -->
+      <section class="posts-section">
+        <!-- Loading State -->
+        @if (isLoading()) {
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading community posts...</p>
+          </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading() && posts().length === 0) {
+          <div class="empty-state">
+            <div class="empty-icon">💭</div>
+            <h3>No posts yet</h3>
+            <p>Be the first to start a discussion!</p>
+            <button class="btn-primary" (click)="showCreateModal.set(true)">
+              Create First Post
+            </button>
+          </div>
+        }
+
+        <!-- Pinned Posts -->
+        @if (!isLoading() && (posts() | filterPosts:'pinned').length > 0) {
+          <div class="pinned-section">
+            <h3 class="section-title">📌 Pinned Posts</h3>
+            <div class="posts-grid">
+              @for (post of posts() | filterPosts:'pinned'; track post.id) {
+                <app-post-card 
+                  [post]="post"
+                 (like)="onLikePost($event)">
+                </app-post-card>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- All Posts -->
+        @if (!isLoading() && filteredPosts().length > 0) {
+          <div class="all-posts-section">
+            <h3 class="section-title">✨ Recent Discussions</h3>
+            <div class="posts-grid">
+               @for (post of posts() | filterPosts:'unpinned'; track post.id) {
+                <app-post-card 
+                  [post]="post"
+                  (like)="onLikePost($event)">
+                </app-post-card>
+              }
+            </div>
+          </div>
+        }
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="forum-sidebar">
+        <!-- Stats Card -->
+        <div class="sidebar-card">
+          <h4>🏆 Your Stats</h4>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-value">12</span>
+              <span class="stat-label">Posts</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">45</span>
+              <span class="stat-label">Replies</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">3</span>
+              <span class="stat-label">Badges</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Challenge Card -->
+       
+        
+        <!-- Additional Sidebar Content -->
+        <div class="sidebar-card">
+          <h4>🔥 Trending Topics</h4>
+          <p>Discover what the community is talking about right now.</p>
+          <button class="btn-secondary">Explore Trends</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+  @if (showCreateModal()) {
+  <app-create-post-modal
+    (postCreated)="onPostCreated($event)"
+    (cancel)="onCancelCreate()"
+  ></app-create-post-modal>
+}
+</div>

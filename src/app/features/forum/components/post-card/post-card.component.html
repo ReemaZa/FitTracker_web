@@ -1,0 +1,98 @@
+<article 
+  class="post-card" 
+  [class.pinned]="post().isPinned"
+  tabindex="0"
+  role="article">
+  
+  <!-- Header - avec nouvelles classes -->
+  <div class="post-header">
+    <div class="author-info">
+      <img 
+        [src]="post().author.avatarUrl" 
+        [alt]="post().author.name"
+        class="author-avatar"
+        width="40" 
+        height="40"
+        loading="lazy">
+      <div class="author-details">
+        <h4 class="author-name">{{ post().author.name }}</h4>
+        <div class="author-level">
+          <span class="material-icons-outlined icon-xs">stars</span>
+       
+        </div>
+      </div>
+    </div>
+    
+    <div class="post-meta">
+      <span class="post-time">
+        <span class="material-icons-outlined icon-xs">schedule</span>
+        {{ post().createdAt | timeAgo }}
+      </span>
+      
+      <div class="badge-container">
+        @if (post().isPinned) {
+          <span class="pin-badge">
+            <span class="material-icons-outlined icon-xs">push_pin</span>
+            Pinned
+          </span>
+        }
+        <!-- Note: Vous devrez ajouter isHotPost() dans votre TS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Content - avec nouvelles classes -->
+  <div class="post-content">
+   
+    <h3 class="post-title">
+      <a [routerLink]="['/forum/post', post().id]">{{ post().title }}</a>
+    </h3>
+    
+ 
+    
+    <div class="post-tags">
+      <!-- Changé: category → post-category + classe dynamique -->
+    <span class="post-category" [class]="'post-category category-' + post().category">
+        <span class="material-icons-outlined icon-xs">
+          {{ post().category | formatCategory:'icon' }}
+        </span>
+        {{ post().category | formatCategory }}
+      </span>
+      
+      @for (tag of displayTags() ; track tag) {
+        <span class="tag">
+          <span class="material-icons-outlined icon-xs">tag</span>
+          {{ tag }}
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Footer - réorganisé avec nouvelles classes -->
+  <div class="post-footer">
+    <!-- Ajouté: conteneur pour les stats -->
+    <div class="post-stats">
+      <!-- Changé: like-btn → stat-btn + ajouté classe like-btn -->
+      <button class="stat-btn like-btn" (click)="onLike()">
+        <!-- Changé: icon-sm → icon -->
+          <span class="material-icons-outlined icon">
+    {{ post().isLiked ? 'favorite' : 'favorite_border' }}
+  </span>
+  
+        {{ post().likes }}
+      </button>
+      
+      <!-- Changé: span.stat pour commentaires -->
+    
+    
+    </div>
+    
+    <!-- Ajouté: bouton Read More -->
+   <a 
+      [routerLink]="['/forum/post', post().id]" 
+      class="read-more-btn"
+      aria-label="Read full post">
+      Read More
+    </a>
+  </div>
+</article>

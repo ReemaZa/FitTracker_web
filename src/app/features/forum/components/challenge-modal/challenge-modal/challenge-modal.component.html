@@ -1,0 +1,122 @@
+<div class="challenge-modal-overlay" (click)="onCancel()">
+  <div class="challenge-modal" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-content">
+        <div class="challenge-badge-large">
+          <span class="material-icons-outlined">emoji_events</span>
+          <span>Daily Challenge</span>
+        </div>
+        <h2>30-Minute Morning Mobility</h2>
+        <p class="challenge-subtitle">Join thousands of members in today's community challenge</p>
+      </div>
+      <button class="close-btn" (click)="onCancel()">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+    
+    <!-- Content -->
+    <div class="modal-content">
+      <!-- Challenge Details -->
+      <div class="challenge-details">
+        <div class="detail-card">
+          <span class="material-icons-outlined">schedule</span>
+          <div>
+            <h4>Duration</h4>
+            <p>30 minutes (adjustable)</p>
+          </div>
+        </div>
+        <div class="detail-card">
+          <span class="material-icons-outlined">fitness_center</span>
+          <div>
+            <h4>Focus Area</h4>
+            <p>Full Body Mobility</p>
+          </div>
+        </div>
+        <div class="detail-card">
+          <span class="material-icons-outlined">group</span>
+          <div>
+            <h4>Participants</h4>
+            <p>1,248 members today</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Customization -->
+      <div class="customization-section">
+        <h3>Customize Your Challenge</h3>
+        
+        <!-- Duration Selection -->
+        <div class="customization-group">
+          <label class="custom-label">Duration</label>
+          <div class="duration-buttons">
+            @for (duration of durations; track duration.value) {
+              <button
+                class="duration-btn"
+                [class.selected]="selectedDuration === duration.value"
+                (click)="selectedDuration = duration.value">
+                {{ duration.label }}
+              </button>
+            }
+          </div>
+        </div>
+        
+        <!-- Type Selection -->
+        <div class="customization-group">
+          <label class="custom-label">Challenge Type</label>
+          <div class="type-grid">
+            @for (type of challengeTypes; track type.value) {
+              <div
+                class="type-card"
+                [class.selected]="challengeType === type.value"
+                (click)="challengeType = type.value">
+                <span class="type-icon">{{ type.icon }}</span>
+                <span class="type-label">{{ type.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+        
+        <!-- Timer Toggle -->
+        <div class="timer-toggle">
+          <label class="toggle-label">
+            <input type="checkbox" [(ngModel)]="showTimerOptions">
+            <span class="toggle-slider"></span>
+            <span>Use built-in timer</span>
+          </label>
+          @if (showTimerOptions) {
+            <div class="timer-options">
+              <label class="timer-label">Set countdown timer:</label>
+              <div class="timer-input">
+                <input type="number" min="1" max="120" value="30">
+                <span>minutes</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      
+      <!-- Instructions -->
+      <div class="instructions">
+        <h3>Challenge Instructions</h3>
+        <ol class="instructions-list">
+          <li>Find a comfortable space with enough room to move</li>
+          <li>Start with 5 minutes of light warm-up (jogging in place, arm circles)</li>
+          <li>Follow the 25-minute mobility routine focusing on major joints</li>
+          <li>Track your completion to maintain your streak!</li>
+        </ol>
+      </div>
+    </div>
+    
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="onCancel()">
+        Not Today
+      </button>
+      <button class="btn-primary" (click)="onStart()">
+        <span class="material-icons-outlined">play_arrow</span>
+        Start Challenge
+      </button>
+    </div>
+  </div>
+</div>

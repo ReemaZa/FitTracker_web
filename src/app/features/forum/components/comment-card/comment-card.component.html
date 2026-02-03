@@ -1,0 +1,121 @@
+<!-- comment-card.component.html -->
+<div class="comment-card" [class.solution]="comment().isSolution">
+  
+  <!-- Badge Solution -->
+  @if (comment().isSolution) {
+    <div class="solution-badge">
+      <span class="material-icons-outlined">check_circle</span>
+      <span>Marked as Solution</span>
+    </div>
+  }
+  
+  <!-- Comment Header -->
+  <div class="comment-header">
+    <div class="comment-author">
+      <img 
+        src="https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg?cs=srgb&dl=pexels-mostafasanadd-868113.jpg&fm=jpg"
+ 
+        class="comment-avatar"
+        loading="lazy">
+      <div class="comment-author-info">
+        <h4 class="author-name">Andrew</h4>
+        <div class="comment-meta">
+          <span class="comment-time">{{ comment().createdAt | timeAgo }}</span>
+        
+        </div>
+      </div>
+    </div>
+    
+    <!-- Comment Actions -->
+    <div class="comment-actions">
+      <!-- CORRIGÉ : Utiliser canMarkAsSolution() au lieu de isPostAuthor() -->
+      @if (canMarkAsSolution() ) {
+        <button 
+          class="action-btn small" 
+          (click)="onMarkAsSolution()"
+          [disabled]="isSubmittingReply()"
+        >
+          <span class="material-icons-outlined icon-sm">check</span>
+       @if (!comment().isSolution) {
+
+    Mark as solution
+
+} @else {
+ 
+    Unmark solution
+
+}
+
+        </button>
+      }
+      <button 
+        class="action-btn small" 
+        (click)="onReply()"
+        [disabled]="isSubmittingReply()"
+      >
+        <span class="material-icons-outlined icon-sm">reply</span>
+        Reply
+      </button>
+    </div>
+  </div>
+  
+  <!-- Comment Content -->
+  <div class="comment-content">
+    <p>{{ comment().content }}</p>
+  </div>
+  
+  <!-- Comment Footer -->
+  <div class="comment-footer">
+  
+    <button 
+      class="reply-btn" 
+      (click)="onReply()"
+      [disabled]="isSubmittingReply()"
+    >
+      Reply
+    </button>
+  </div>
+  
+  <!-- Reply Form (visible seulement si showReplyForm est true) -->
+  @if (showReplyForm()) {
+    <div class="reply-form">
+      <div class="form-header">
+        <strong>Replying to Andrew</strong>
+        <button class="cancel-btn" (click)="onCancelReply()">×</button>
+      </div>
+      
+      <!-- CORRIGÉ : Un seul (ngModelChange) -->
+      <textarea
+        [ngModel]="replyContent()"
+        (ngModelChange)="replyContent.set($event)"
+        placeholder="Write your reply..."
+        class="reply-input"
+        rows="3"
+        [disabled]="isSubmittingReply()"
+      ></textarea>
+      
+      <div class="form-actions">
+        <button 
+          class="btn-secondary" 
+          (click)="onCancelReply()"
+          [disabled]="isSubmittingReply()"
+        >
+          Cancel
+        </button>
+        <button 
+          class="btn-primary" 
+          (click)="onSubmitReply()"
+          [disabled]="!canSubmitReply()"
+        >
+          @if (isSubmittingReply()) {
+            <span class="spinner-small"></span>
+            Posting...
+          } @else {
+            Post Reply
+          }
+        </button>
+      </div>
+    </div>
+  }
+  
+</div>

@@ -1,0 +1,372 @@
+/* comment-card.component.css */
+.comment-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.comment-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.comment-card.solution {
+  border: 2px solid #10b981;
+  background: linear-gradient(to right, #f0fdf4, #ecfdf5);
+}
+
+/* Solution Badge */
+.solution-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #10b981;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.solution-badge .material-icons-outlined {
+  font-size: 16px;
+}
+
+/* Comment Header */
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.comment-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-author-info {
+  flex: 1;
+}
+
+.author-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #111827;
+}
+
+.comment-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.author-level {
+  color: #8b5cf6;
+  font-weight: 500;
+}
+
+/* Comment Actions */
+.comment-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn.small {
+  padding: 6px 12px;
+  font-size: 13px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.action-btn.small:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.action-btn.small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Comment Content */
+.comment-content {
+  margin: 16px 0;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.comment-content p {
+  margin: 0;
+}
+
+/* Comment Footer */
+.comment-footer {
+  display: flex;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.like-btn, .reply-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.like-btn:hover:not(:disabled),
+.reply-btn:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.like-btn:disabled,
+.reply-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Reply Form */
+.reply-form {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.cancel-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-btn:hover {
+  color: #374151;
+}
+
+.reply-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.reply-input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.btn-primary {
+  padding: 8px 16px;
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #7c3aed;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner-small {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .comment-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .comment-actions {
+    align-self: flex-end;
+  }
+}
+/* Indentation visuelle selon la profondeur */
+.comment-card {
+  margin-bottom: 16px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.comment-card.depth-0 {
+  margin-left: 0;
+}
+
+.comment-card.depth-1 {
+  margin-left: 32px;
+}
+
+.comment-card.depth-2 {
+  margin-left: 56px;
+}
+
+.comment-card.depth-3 {
+  margin-left: 72px;
+}
+
+.comment-card.depth-4 {
+  margin-left: 88px;
+}
+
+/* Ligne de connexion pour les réponses */
+.replies-container {
+  position: relative;
+  margin-top: 12px;
+}
+
+.comment-card.depth-0 .replies-container::before,
+.comment-card.depth-1 .replies-container::before,
+.comment-card.depth-2 .replies-container::before,
+.comment-card.depth-3 .replies-container::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+/* Lignes horizontales pour les réponses */
+.comment-card.depth-1::before,
+.comment-card.depth-2::before,
+.comment-card.depth-3::before,
+.comment-card.depth-4::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 24px;
+  width: 14px;
+  height: 2px;
+  background: #e5e7eb;
+}
+
+/* Styles différents selon la profondeur */
+.comment-card.depth-1 {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.comment-card.depth-2 {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.comment-card.depth-3 {
+  background: #f0f0f0;
+  border-color: #9ca3af;
+}
+
+/* Indicateur de nombre de réponses */
+.reply-count {
+  font-size: 13px;
+  color: #6b7280;
+  margin-left: 12px;
+}
+
+/* Bouton Show/Hide replies */
+.action-btn.small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .comment-card.depth-1 {
+    margin-left: 20px;
+  }
+  
+  .comment-card.depth-2 {
+    margin-left: 32px;
+  }
+  
+  .comment-card.depth-3 {
+    margin-left: 44px;
+  }
+  
+  .comment-card.depth-4 {
+    margin-left: 56px;
+  }
+}
