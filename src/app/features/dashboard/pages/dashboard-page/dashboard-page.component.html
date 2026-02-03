@@ -122,6 +122,33 @@
             <h3 class="summary-title">📊 Weekly Summary</h3>
             <div class="summary-content">
               <div class="summary-item">
+                <span class="summary-label">Week Period:</span>
+                <span class="summary-value">{{ weeklySummary.weekRange }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Total Workouts:</span>
+                <span class="summary-value">{{ weeklySummary.totalWorkouts }} sessions</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Calories Burned:</span>
+                <span class="summary-value">{{ weeklySummary.totalCalories }} kcal</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Avg Duration:</span>
+                <span class="summary-value">{{ weeklySummary.avgDuration }} min</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Most Active Day:</span>
+                <span class="summary-value highlight">{{ weeklySummary.mostActiveDay }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- Monthly View -->
   @if (selectedView === 'monthly') {
     @if (isLoadingCharts) {
       <div class="loading-container">
@@ -198,51 +225,26 @@
         }
       </div>
     }
-  }iv class="summary-content">
-        <div class="summary-item">
-          <span class="summary-label">Month:</span>
-          <span class="summary-value">{{ monthlySummary.month }} {{ monthlySummary.year }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Total Workouts:</span>
-          <span class="summary-value">{{ monthlySummary.totalWorkouts }} sessions</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Total Calories:</span>
-          <span class="summary-value">{{ monthlySummary.totalCalories }} kcal</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Total Distance:</span>
-          <span class="summary-value">{{ monthlySummary.totalDistance }} km</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Avg Workouts/Week:</span>
-          <span class="summary-value">{{ monthlySummary.avgWorkoutsPerWeek }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Top Activity:</span>
-          <span class="summary-value highlight">{{ monthlySummary.topActivity }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  }
 
   <!-- Goals Section -->
-  <div class="goals-section" *ngIf="stats">
-    <div class="goal-card">
-      <h3 class="goal-title">🎯 Weekly Goal Progress</h3>
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="stats.weeklyGoalProgress"></div>
+  @if (stats) {
+    <div class="goals-section">
+      <div class="goal-card">
+        <h3 class="goal-title">🎯 Weekly Goal Progress</h3>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="stats.weeklyGoalProgress"></div>
+        </div>
+        <p class="progress-text">{{ stats.weeklyGoalProgress }}% Complete</p>
       </div>
-      <p class="progress-text">{{ stats.weeklyGoalProgress }}% Complete</p>
-    </div>
-    
-    <div class="goal-card">
-      <h3 class="goal-title">🎯 Monthly Goal Progress</h3>
-      <div class="progress-bar">
-        <div class="progress-fill monthly" [style.width.%]="stats.monthlyGoalProgress"></div>
+      
+      <div class="goal-card">
+        <h3 class="goal-title">🎯 Monthly Goal Progress</h3>
+        <div class="progress-bar">
+          <div class="progress-fill monthly" [style.width.%]="stats.monthlyGoalProgress"></div>
+        </div>
+        <p class="progress-text">{{ stats.monthlyGoalProgress }}% Complete</p>
       </div>
-      <p class="progress-text">{{ stats.monthlyGoalProgress }}% Complete</p>
     </div>
-  </div>
+  }
 </div>

@@ -17,6 +17,9 @@ import {
 export class DashboardService {
   private apiUrl = `${environment.apiUrl}/dashboard`;
   private useMockData = false; // Toggle this: false = use backend API, true = use mock data
+  
+  // Test user ID - replace with any user ID from your database
+  private testUserId = 1; // Change this to match a user in your SQL Server database
 
   constructor(private http: HttpClient) { }
 
@@ -38,7 +41,7 @@ export class DashboardService {
 
   getDashboardStats(): Observable<DashboardStats> {
     if (!this.useMockData) {
-      return this.http.get<DashboardStats>(`${this.apiUrl}/stats`).pipe(
+      return this.http.get<DashboardStats>(`${this.apiUrl}/stats?userId=${this.testUserId}`).pipe(
         tap(data => console.log('Dashboard stats loaded:', data)),
         catchError(this.handleError)
       );
@@ -58,7 +61,7 @@ export class DashboardService {
 
   getWeeklyWorkoutData(): Observable<WorkoutData[]> {
     if (!this.useMockData) {
-      return this.http.get<WorkoutData[]>(`${this.apiUrl}/weekly`).pipe(
+      return this.http.get<WorkoutData[]>(`${this.apiUrl}/weekly?userId=${this.testUserId}`).pipe(
         catchError(this.handleError)
       );
     }
@@ -78,7 +81,7 @@ export class DashboardService {
 
   getMonthlyWorkoutData(): Observable<WorkoutData[]> {
     if (!this.useMockData) {
-      return this.http.get<WorkoutData[]>(`${this.apiUrl}/monthly`).pipe(
+      return this.http.get<WorkoutData[]>(`${this.apiUrl}/monthly?userId=${this.testUserId}`).pipe(
         catchError(this.handleError)
       );
     }
@@ -95,7 +98,7 @@ export class DashboardService {
 
   getActivityBreakdown(): Observable<ActivityBreakdown[]> {
     if (!this.useMockData) {
-      return this.http.get<ActivityBreakdown[]>(`${this.apiUrl}/activity-breakdown`).pipe(
+      return this.http.get<ActivityBreakdown[]>(`${this.apiUrl}/activity-breakdown?userId=${this.testUserId}`).pipe(
         catchError(this.handleError)
       );
     }
@@ -111,7 +114,7 @@ export class DashboardService {
 
   getWeeklySummary(): Observable<WeeklySummary> {
     if (!this.useMockData) {
-      return this.http.get<WeeklySummary>(`${this.apiUrl}/summary/weekly`).pipe(
+      return this.http.get<WeeklySummary>(`${this.apiUrl}/summary/weekly?userId=${this.testUserId}`).pipe(
         catchError(this.handleError)
       );
     }
@@ -129,7 +132,7 @@ export class DashboardService {
 
   getMonthlySummary(): Observable<MonthlySummary> {
     if (!this.useMockData) {
-      return this.http.get<MonthlySummary>(`${this.apiUrl}/summary/monthly`).pipe(
+      return this.http.get<MonthlySummary>(`${this.apiUrl}/summary/monthly?userId=${this.testUserId}`).pipe(
         catchError(this.handleError)
       );
     }

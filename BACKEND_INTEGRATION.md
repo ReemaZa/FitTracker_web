@@ -3,7 +3,17 @@
 ## NestJS API Endpoints to Implement
 
 ### 1. Dashboard Statistics Endpoint
-**Endpoint**: `GET /api/dashboard/stats`
+**Endpoint**: `GET /api/dashboard/stats?userId={userId}`
+
+**Query Parameters:**
+- `userId` (required): The ID of the user
+
+**⚠️ IMPORTANT - Daily Goal Instance Filtering:**
+When calculating stats from the `dailyGoalInstance` table, you MUST add:
+```sql
+WHERE isGoalActive = true
+```
+This ensures only active goals are included (users can activate/deactivate goals).
 
 **Response Example**:
 ```json
