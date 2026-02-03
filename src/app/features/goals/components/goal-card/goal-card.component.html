@@ -1,0 +1,60 @@
+<div class="goal-card" [class.inactive]="!goal.isActive">
+  <!-- Header -->
+  <div class="goal-top">
+    <span class="goal-type">{{ goal.goalType | titlecase }}</span>
+
+    <button
+      class="icon-action danger"
+      aria-label="Delete goal"
+      (click)="delete.emit(goal.id)"
+    >
+      🗑
+    </button>
+  </div>
+
+  <!-- Main -->
+  <div class="goal-main">
+    <h3 class="goal-title">{{ goal.title }}</h3>
+
+    <p class="goal-description" *ngIf="goal.description">
+      {{ goal.description }}
+    </p>
+
+    <p class="goal-metric">
+      {{ goal.targetValue }} <span>{{ goal.unit }}</span>
+    </p>
+  </div>
+
+  <div class="goal-divider"></div>
+
+  <!-- Schedule + Toggle -->
+  <div class="goal-schedule">
+    <span *ngIf="goal.schedule?.frequency === 'daily'">
+      Every day
+    </span>
+
+    <div
+      class="week-days"
+      *ngIf="goal.schedule?.frequency === 'weekly'"
+    >
+      <span
+        *ngFor="let d of ['S','M','T','W','T','F','S']; let i = index"
+        class="day"
+        [class.active]="goal.schedule.daysOfWeek?.includes(i)"
+      >
+        {{ d }}
+      </span>
+    </div>
+
+<label class="toggle-switch">
+  <input
+    type="checkbox"
+    [checked]="goal.isActive"
+    (change)="toggle.emit(goal.id)"
+  />
+  <span class="slider"></span>
+</label>
+
+
+  </div>
+</div>
