@@ -12,9 +12,21 @@
 
   <!-- NAVIGATION -->
   <nav class="nav">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <a routerLink="/dashboard" routerLinkActive="active">
       <span class="material-symbols-rounded">dashboard</span>
       Dashboard
+    </a>
+
+        <!-- NEW: BODY METRICS -->
+    <a routerLink="/metrics" routerLinkActive="active">
+      <span class="material-symbols-rounded">monitor_weight</span>
+      Body Metrics
+    </a>
+
+    <!-- NEW: HEALTH PROGRESS -->
+    <a routerLink="/progress" routerLinkActive="active">
+      <span class="material-symbols-rounded">show_chart</span>
+      Health Progress
     </a>
 
     <a routerLink="/goals" routerLinkActive="active">
