@@ -1,0 +1,85 @@
+/* body-metrics.component.css */
+
+form {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fef6f6; /* light pink shade */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  color: #555; /* dark grey for text */
+  font-weight: 500;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9ff; /* very light blue */
+  font-size: 14px;
+  color: #333;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #cce7ff; /* light blue */
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:disabled {
+  background-color: #e0e0e0; /* grey for disabled */
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #a8d0ff; /* slightly darker blue */
+}
+
+h2, h3 {
+  text-align: center;
+  color: #333;
+}
+
+section {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 15px;
+  background-color: #f7f7f7; /* light grey background for results */
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+p {
+  margin: 8px 0;
+  color: #444;
+  font-size: 15px;
+}
+
+.error {
+  color: #d45d5d; /* soft red */
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+  border-color: #ffb3b3; /* light pink for invalid */
+}
+
+/* Optional: highlight results */
+section p strong {
+  color: #3366cc; /* subtle blue */
+}

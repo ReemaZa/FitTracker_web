@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+router-outlet {
+  display: block;
+}
 
 
 /* ===============================
@@ -109,8 +112,9 @@
 
 html,
 body {
-  height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden; /* ⛔ body must NOT scroll */
+
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: #f7f8f8;
   color: var(--black);
 }
@@ -124,12 +128,21 @@ body {
   min-height: 100vh;
 }
 
+
 main.content {
   flex: 1;
   margin-left: var(--sidebar-width);
+
   padding: 24px;
-  padding-top: 88px;
+  padding-top: calc(var(--app-header-height) + 24px);
+  width: calc(100vw - var(--sidebar-width)); /* ✅ KEY LINE */
+
+  height: 100vh;
+  overflow-y: auto;   /* ✅ THIS IS THE SCROLL */
 }
+
+
+
 
 /* ===============================
    CARD (used everywhere later)
