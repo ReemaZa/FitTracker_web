@@ -1,12 +1,298 @@
-/* Global styles - minimal resets only */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+/* ===============================
+   DESIGN TOKENS
+   =============================== */
+
+:root {
+      /* Header */
+  --app-header-height: 64px;
+  /* Brand */
+  --brand-primary: #595cff;
+  --brand-secondary: #C6F8FF;
+  --secondary-purple: #696EFF;
+  --secondary-pink : #F8ACFF;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(
+    to bottom left,
+    #93A6FD 0%,
+    #9AC1FE 100%
+  );
+
+  --gradient-secondary: linear-gradient(
+    to bottom left,
+    #C58BF2 0%,
+    #EEA4CE 100%
+  );
+
+  /* Neutrals */
+  --black: #1d1617;
+  --white: #ffffff;
+
+  --gray-dark: #7b6f72;
+  --gray-medium: #ada4a5;
+  --gray-light: #dddada;
+  --border-color: #e6e7eb;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --radius: 12px;
+
+
+  /* Primary Colors - Blue/Purple Linear */
+  --blue-linear: #9DCEFF;      /* Primary brand color */
+  --purple-linear: #92A3FD;    /* Secondary/Accent */
+  
+  /* Progress & Metrics */
+  --calories-linear: #10B981;  /* Success/Health metrics */
+  --progress-bar-linear: #3B82F6; /* Progress indicators */
+  --water-intake-linear: #0EA5E9; /* Hydration/Water tracking */
+  
+  /* Logo Colors (if needed separately) */
+  --logo-linear-primary: #4F46E5;
+  --logo-linear-secondary: #7C3AED;
+  
+  /* Neutral Grayscale */
+  --gray-1: #F9FAFB;           /* Backgrounds */
+  --gray-2: #E5E7EB;           /* Borders, dividers */
+  --gray-3: #9CA3AF;           /* Secondary text, disabled */
+  
+  /* Base Colors */
+  --white-color: #FFFFFF;
+  --black-color: #111827;
+  
+  /* Border */
+  --border-color: #E5E7EB;
+  
+  /* Semantic Colors */
+  --success: #10B981;          /* Matches calories-linear */
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  
+  /* Derived Colors (for consistency) */
+  --primary: var(--blue-linear);
+  --primary-light: rgba(79, 70, 229, 0.1);
+  --primary-dark: #4338CA;
+  
+  --secondary: var(--purple-linear);
+  --secondary-light: rgba(124, 58, 237, 0.1);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  /* Transitions */
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+
 }
 
+/* ===============================
+   RESET
+   =============================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: #f5f5f5;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f7f8f8;
+  color: var(--black);
+}
+
+/* ===============================
+   APP LAYOUT
+   =============================== */
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+main.content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 24px;
+  padding-top: 88px;
+}
+
+/* ===============================
+   CARD (used everywhere later)
+   =============================== */
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+
+
+/* ===============================
+   for forum
+   =============================== */
+
+   
+/* Utility Classes */
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-success { color: var(--success); }
+.bg-white { background: white; }
+.rounded { border-radius: var(--radius); }
+.shadow { box-shadow: var(--shadow); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+
+.material-icons-outlined {
+  font-family: 'Material Icons Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Size variants */
+.icon-sm { font-size: 16px; }
+.icon-md { font-size: 20px; }
+.icon-lg { font-size: 24px; }
+
+/* Micro-interactions */
+button, 
+a, 
+[role="button"] {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(79, 70, 229, 0.2);
+  color: var(--gray-900);
+}
+/* =============== COLOR UTILITY CLASSES =============== */
+
+/* Background Colors */
+.bg-blue-linear { background-color: var(--blue-linear); }
+.bg-purple-linear { background-color: var(--purple-linear); }
+.bg-calories-linear { background-color: var(--calories-linear); }
+.bg-progress-bar-linear { background-color: var(--progress-bar-linear); }
+.bg-water-intake-linear { background-color: var(--water-intake-linear); }
+.bg-gray-1 { background-color: var(--gray-1); }
+.bg-gray-2 { background-color: var(--gray-2); }
+.bg-gray-3 { background-color: var(--gray-3); }
+.bg-white { background-color: var(--white-color); }
+
+/* Text Colors */
+.text-blue-linear { color: var(--blue-linear); }
+.text-purple-linear { color: var(--purple-linear); }
+.text-calories-linear { color: var(--calories-linear); }
+.text-progress-bar-linear { color: var(--progress-bar-linear); }
+.text-water-intake-linear { color: var(--water-intake-linear); }
+.text-gray-1 { color: var(--gray-1); }
+.text-gray-2 { color: var(--gray-2); }
+.text-gray-3 { color: var(--gray-3); }
+.text-black { color: var(--black-color); }
+.text-white { color: var(--white-color); }
+
+/* Border Colors */
+.border-blue-linear { border-color: var(--blue-linear); }
+.border-purple-linear { border-color: var(--purple-linear); }
+.border-gray-2 { border-color: var(--gray-2); }
+.border-color { border-color: var(--border-color); }
+
+/* Semantic Colors */
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+.bg-success { background-color: var(--success); }
+.bg-warning { background-color: var(--warning); }
+.bg-danger { background-color: var(--danger); }
+
+
+
+
+/*
+
+
+*/
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--gray-dark);
+}
+
+input,
+textarea,
+select {
+  appearance: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  background: white;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: var(--transition);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: '▾';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--gray-medium);
 }

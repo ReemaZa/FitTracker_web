@@ -1,0 +1,30 @@
+<div class="page-header">
+  <h1>My Goals</h1>
+
+  <button class="create-btn" (click)="openCreate()">
+    + Create Goal
+  </button>
+</div>
+
+<!-- CREATE DRAWER -->
+<div class="drawer" [class.open]="isDrawerOpen()">
+  <app-goal-form
+    *ngIf="isDrawerOpen()"
+    (submitGoal)="onCreateGoal($event)"
+  />
+</div>
+
+<!-- BACKDROP -->
+<div
+  class="backdrop"
+  *ngIf="isDrawerOpen()"
+  (click)="closeDrawer()"
+></div>
+
+<hr />
+
+<app-goal-list
+  [goals]="goals()"
+  (toggle)="onToggleGoal($event)"
+  (delete)="onDeleteGoal($event)"
+/>

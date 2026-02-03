@@ -1,0 +1,40 @@
+<div class="daily-card" [class.completed]="goal.isCompleted">
+  <div class="header">
+    <h3>{{ goal.title }}</h3>
+
+    <span class="check" *ngIf="goal.isCompleted">
+      ✓
+    </span>
+  </div>
+
+  <p class="desc" *ngIf="goal.description">
+    {{ goal.description }}
+  </p>
+
+  <!-- BINARY GOAL -->
+<button
+  *ngIf="goal.metricType === 'binary'"
+  class="binary-btn"
+  [class.done]="goal.isCompleted"
+  (click)="toggle.emit(goal.id)"
+>
+  {{ goal.isCompleted ? 'Mark as undone' : 'Mark as done' }}
+</button>
+
+
+  <!-- PROGRESS GOAL -->
+  <ng-container *ngIf="goal.metricType !== 'binary'">
+    <app-progress-bar
+      [value]="goal.completedValue"
+      [max]="goal.targetValue"
+    />
+
+    <div class="actions">
+      <button (click)="decrement.emit(goal.id)">−</button>
+      <span>
+        {{ goal.completedValue }} / {{ goal.targetValue }} {{ goal.unit }}
+      </span>
+      <button (click)="increment.emit(goal.id)">+</button>
+    </div>
+  </ng-container>
+</div>

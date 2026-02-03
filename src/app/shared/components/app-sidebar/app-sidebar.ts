@@ -1,4 +1,3 @@
-export * from './app-sidebar.component';
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 

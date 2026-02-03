@@ -1,5 +1,9 @@
-<app-sidebar></app-sidebar>
+<app-app-header></app-app-header>
 
-<div class="main-content">
-  <router-outlet></router-outlet>
+<div class="layout">
+  <app-app-sidebar></app-app-sidebar>
+
+<main class="content" style="padding-top: var(--app-header-height)">
+    <router-outlet></router-outlet>
+  </main>
 </div>

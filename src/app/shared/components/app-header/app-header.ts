@@ -6,9 +6,8 @@ standalone: true,
 
   imports: [],
   templateUrl: './app-header.html',
-  styleUrl: './app-header.css',
+  styleUrls: ['./app-header.css'],
 })
 export class AppHeader {
 
 }
-
