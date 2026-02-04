@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LineChartComponent } from '../../components/line-chart/line-chart.component';
 import { BarChartComponent } from '../../components/bar-chart/bar-chart.component';
@@ -55,7 +55,10 @@ export class DashboardPageComponent implements OnInit {
 
   selectedView: 'weekly' | 'monthly' = 'weekly';
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(
+    private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.loadDashboardData();
@@ -70,6 +73,7 @@ export class DashboardPageComponent implements OnInit {
       next: (stats: DashboardStats) => {
         this.stats = stats;
         this.isLoadingStats = false;
+        this.cdr.detectChanges();
       },
       error: (error: any) => {
         this.statsError = 'Failed to load dashboard statistics';
@@ -86,9 +90,12 @@ export class DashboardPageComponent implements OnInit {
       next: (data: WorkoutData[]) => {
         this.weeklyData = data;
         this.prepareWeeklyChart();
+        this.isLoadingCharts = false;
+        this.cdr.detectChanges();
       },
       error: (error: any) => {
         this.chartsError = 'Failed to load workout data';
+        this.isLoadingCharts = false;
         console.error('Error loading weekly data:', error);
       }
     });
@@ -110,11 +117,10 @@ export class DashboardPageComponent implements OnInit {
       next: (activities: ActivityBreakdown[]) => {
         this.activityBreakdown = activities;
         this.prepareActivityChart();
-        this.isLoadingCharts = false;
+        this.cdr.detectChanges();
       },
       error: (error: any) => {
         this.chartsError = 'Failed to load activity breakdown';
-        this.isLoadingCharts = false;
         console.error('Error loading activities:', error);
       }
     });

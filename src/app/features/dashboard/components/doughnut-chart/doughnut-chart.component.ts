@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 
@@ -78,7 +78,7 @@ Chart.register(...registerables);
     }
   `]
 })
-export class DoughnutChartComponent implements OnInit, AfterViewInit {
+export class DoughnutChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   @Input() title: string = '';
   @Input() labels: string[] = [];
@@ -97,6 +97,15 @@ export class DoughnutChartComponent implements OnInit, AfterViewInit {
     this.createChart();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data'] || changes['labels'] || changes['backgroundColor']) {
+      this.prepareLegend();
+      if (this.chartCanvas) {
+        this.createChart();
+      }
+    }
+  }
+
   private prepareLegend() {
     this.legendItems = this.labels.map((label, index) => ({
       label,
@@ -107,6 +116,11 @@ export class DoughnutChartComponent implements OnInit, AfterViewInit {
 
   private createChart() {
     if (!this.chartCanvas) return;
+
+    // Destroy existing chart before creating new one
+    if (this.chart) {
+      this.chart.destroy();
+    }
 
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
     if (!ctx) return;

@@ -42,7 +42,6 @@ export class DashboardService {
   getDashboardStats(): Observable<DashboardStats> {
     if (!this.useMockData) {
       return this.http.get<DashboardStats>(`${this.apiUrl}/stats?userId=${this.testUserId}`).pipe(
-        tap(data => console.log('Dashboard stats loaded:', data)),
         catchError(this.handleError)
       );
     }
